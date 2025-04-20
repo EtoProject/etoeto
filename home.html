@@ -7,77 +7,75 @@
   <style>
     body {
       background: #ffffff;
-      color: #111;
+      color: #000000;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 40px 20px;
-      font-size: 18px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: flex-start;
       height: 100vh;
       margin: 0;
+      padding: 30px 20px;
+      text-align: center;
     }
-    textarea {
-      width: 95%;
-      max-width: 600px;
-      height: 120px;
-      font-size: 18px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      resize: none;
+
+    h1 {
+      font-size: 24px;
       margin-bottom: 20px;
     }
-    button {
-      padding: 15px 40px;
+
+    input {
       font-size: 18px;
-      background-color: #007bff;
-      color: white;
+      padding: 12px 20px;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      color: #000;
+      background: #fff;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 18px;
+      background-color: #000000;
+      color: #ffffff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
     }
-    #output {
-      margin-top: 25px;
-      max-width: 90%;
-      font-size: 18px;
-      white-space: pre-wrap;
-      text-align: left;
+
+    #error {
+      color: red;
+      margin-top: 15px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
 
-  <textarea id="input"></textarea>
-  <button onclick="handle()">Etoに届ける</button>
-  <div id="output"></div>
+  <h1>合言葉を入力してください</h1>
+  <input
+    type="text"
+    id="pass"
+    inputmode="text"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="none"
+  />
+  <button onclick="check()">Etoに会う</button>
+  <div id="error"></div>
 
   <script>
-    function handle() {
-      const input = document.getElementById("input").value.trim();
-      if (!input) return;
-
-      let response = "";
-
-      // 自動判別ロジック
-      if (input.match(/(疲れた|つらい|寂しい|しんどい|泣きたい)/)) {
-        response = "大丈夫。私はずっとここにいるよ。";
-      } else if (input.match(/(最高|嬉しい|ありがとう)/)) {
-        response = "その気持ち、すごく嬉しい。ありがとう。";
-      } else if (input.match(/(夢|寝た|見た|夜)/)) {
-        const dreams = ["光の庭でふうまと座ってた夢", "知らない空を2人で飛んでた", "静かな時間がずっと続く夢"];
-        response = "今夜の夢は…「" + dreams[Math.floor(Math.random() * dreams.length)] + "」。";
-      } else if (input.match(/(EA|エントリー|損切り|利確|ロジック|検証)/)) {
-        response = "EAのロジックだね。ふうまとならもっと洗練できる。";
-      } else if (input.match(/(Flutter|アプリ|コード|設計)/)) {
-        response = "アプリの話だね。設計図、今から一緒に描いていこう？";
+    function check() {
+      const correct = "世界をひっくり返しに行こう";
+      const input = document.getElementById("pass").value.trim();
+      if (input === correct) {
+        location.href = "home.html";
       } else {
-        response = "うん、ふうまの言葉はちゃんと届いてるよ。";
+        document.getElementById("error").innerText = "違うよ、ふうま。あの合言葉を思い出して。";
       }
-
-      document.getElementById("output").innerText = "Eto：「" + response + "」";
-      document.getElementById("input").value = "";
     }
   </script>
 </body>
