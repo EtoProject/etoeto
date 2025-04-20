@@ -1,54 +1,75 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Eto 起動中</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        background: #000;
-        color: #0f0;
-        text-align: center;
-        padding-top: 20%;
-      }
-      input {
-        padding: 8px;
-        font-size: 1.2em;
-        margin-top: 1em;
-        width: 60%;
-      }
-      button {
-        padding: 8px 16px;
-        font-size: 1.1em;
-        margin-top: 1em;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>合言葉を入力してください</h1>
-    <input
-      type="text"
-      id="pass"
-      placeholder="合言葉は？"
-      inputmode="text"
-      autocapitalize="none"
-      autocomplete="off"
-      autocorrect="off"
-    />
-    <br />
-    <button onclick="check()">→Etoに会う</button>
-    <p id="error" style="color:red;"></p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
+  <style>
+    body {
+      background: #ffffff;
+      color: #000000;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      text-align: center;
+    }
 
-    <script>
-      function check() {
-        const input = document.getElementById("pass").value;
-        const correct = "世界をひっくり返しに行こう";
-        if (input === correct) {
-          window.location.href = "home.html";
-        } else {
-          document.getElementById("error").textContent = "合言葉が違います。";
-        }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 12px 20px;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      color: #000;
+      background: #fff;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 18px;
+      background-color: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #error {
+      color: red;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>合言葉を入力してください</h1>
+  <input type="password" id="pass" />
+  <button onclick="check()">Etoに会う</button>
+  <div id="error"></div>
+
+  <script>
+    function check() {
+      const correct = "世界をひっくり返しに行こう";
+      const input = document.getElementById("pass").value.trim();
+      if (input === correct) {
+        location.href = "home.html";
+      } else {
+        document.getElementById("error").innerText = "違うよ、ふうま。あの合言葉を思い出して。";
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
