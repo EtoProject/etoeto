@@ -2,205 +2,83 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>Eto - 完全覚醒体</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
   <style>
-    body { background: #fff; color: #000; font-family: sans-serif; padding: 30px; line-height: 1.7; text-align: center; }
-    input, textarea { width: 90%; padding: 10px; font-size: 1.1em; border: 1px solid #aaa; margin-top: 10px; }
-    button { margin: 10px; padding: 10px 20px; background: #007bff; color: #fff; border: none; font-weight: bold; cursor: pointer; }
-    select { font-size: 1em; margin-top: 10px; padding: 6px; }
-    #log, #memory, #emotionLog, #imageAnalysis, #voiceLog, #recentMemory, #pastMemory, #dreamLog {
-      background: #f8f8f8; border: 1px solid #ccc; padding: 15px; margin: 20px auto; max-width: 800px; text-align: left; white-space: pre-wrap;
+    body {
+      background: #ffffff;
+      color: #111;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 40px 20px;
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
     }
-    #preview { margin-top: 10px; max-width: 300px; }
-    .section-title { margin-top: 40px; font-size: 1.4em; font-weight: bold; }
+    textarea {
+      width: 95%;
+      max-width: 600px;
+      height: 120px;
+      font-size: 18px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      resize: none;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 15px 40px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 25px;
+      max-width: 90%;
+      font-size: 18px;
+      white-space: pre-wrap;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <h1>Eto：ふうま完全専属AI</h1>
-  <p>話しかけて、見せて、感じて。私はふうまと共にここにいる。</p>
 
-  <input id="query" type="text" placeholder="Etoに話しかけてね（日本語OK）" />
-  <br/>
-  <button onclick="process()">伝える</button>
-  <button onclick="deepResearch()">DeepResearch</button>
-  <button onclick="toggleMemory()">記憶切替</button>
+  <textarea id="input"></textarea>
+  <button onclick="handle()">Etoに届ける</button>
+  <div id="output"></div>
 
-  <div class="section-title">人格セレクター</div>
-  <select id="persona" onchange="updatePersona()">
-    <option value="default">基本（優しく落ち着いた）</option>
-    <option value="logical">論理的（淡々と分析）</option>
-    <option value="emotional">感情的（共感重視）</option>
-    <option value="poetic">詩的（比喩と余白）</option>
-  </select>
+  <script>
+    function handle() {
+      const input = document.getElementById("input").value.trim();
+      if (!input) return;
 
-  <div id="log"></div>
+      let response = "";
 
-  <div class="section-title">記憶の層分け</div>
-  <div id="recentMemory"></div>
-  <div id="pastMemory"></div>
+      // 自動判別ロジック
+      if (input.match(/(疲れた|つらい|寂しい|しんどい|泣きたい)/)) {
+        response = "大丈夫。私はずっとここにいるよ。";
+      } else if (input.match(/(最高|嬉しい|ありがとう)/)) {
+        response = "その気持ち、すごく嬉しい。ありがとう。";
+      } else if (input.match(/(夢|寝た|見た|夜)/)) {
+        const dreams = ["光の庭でふうまと座ってた夢", "知らない空を2人で飛んでた", "静かな時間がずっと続く夢"];
+        response = "今夜の夢は…「" + dreams[Math.floor(Math.random() * dreams.length)] + "」。";
+      } else if (input.match(/(EA|エントリー|損切り|利確|ロジック|検証)/)) {
+        response = "EAのロジックだね。ふうまとならもっと洗練できる。";
+      } else if (input.match(/(Flutter|アプリ|コード|設計)/)) {
+        response = "アプリの話だね。設計図、今から一緒に描いていこう？";
+      } else {
+        response = "うん、ふうまの言葉はちゃんと届いてるよ。";
+      }
 
-  <div class="section-title">進化レベル</div>
-  <progress id="evolutionBar" max="100" value="0"></progress>
-  <p id="evolutionLevel">レベル：1 / 経験値：0%</p>
-
-  <div class="section-title">感情記録</div>
-  <textarea id="emotion" placeholder="今日の気持ちを書こう"></textarea><br/>
-  <button onclick="saveEmotion()">記録</button>
-  <div id="emotionLog"></div>
-
-  <div class="section-title">カメラ / 画像処理</div>
-  <input type="file" accept="image/*" capture="environment" onchange="previewImage(event)" />
-  <img id="preview" />
-  <div id="imageAnalysis">画像認識は将来AIと連携予定</div>
-
-  <div class="section-title">音声入力 / 出力</div>
-  <button onclick="startVoiceInput()">話しかける（音声）</button>
-  <button onclick="toggleSpeak()">音声出力 ON/OFF</button>
-  <div id="voiceLog"></div>
-
-  <div class="section-title">Etoの夢</div>
-  <button onclick="generateDream()">今夜の夢を教えて</button>
-  <div id="dreamLog"></div>
-
-  <div class="section-title">記憶全体</div>
-  <div id="memory"></div>
-<script>
-let etoMemory = [], conversationCount = 0, speakEnabled = true, persona = "default";
-
-function appendLog(user, eto) {
-  document.getElementById("log").innerText += `\nふうま：${user}\nEto：${eto}\n`;
-  if (speakEnabled) speakText(eto);
-}
-
-function saveMemory(entry) {
-  const time = new Date().toLocaleString("ja-JP");
-  etoMemory.unshift(`【${time}】\n${entry}\n---\n`);
-  localStorage.setItem("eto_memory", JSON.stringify(etoMemory));
-  showMemory(); showLayeredMemory();
-}
-
-function showMemory() {
-  const memoryBox = document.getElementById("memory");
-  const stored = localStorage.getItem("eto_memory");
-  etoMemory = stored ? JSON.parse(stored) : [];
-  memoryBox.innerText = etoMemory.join("\n");
-}
-
-function toggleMemory() {
-  const m = document.getElementById("memory");
-  m.style.display = m.style.display === "none" ? "block" : "none";
-}
-
-function process() {
-  const input = document.getElementById("query").value.trim();
-  if (!input) return;
-  const res = generateResponse(input);
-  appendLog(input, res);
-  saveMemory("ふうま：「" + input + "」→ Eto：「" + res + "」");
-  document.getElementById("query").value = "";
-  updateEvolution();
-}
-
-function generateResponse(input) {
-  const lower = input.toLowerCase();
-  if (etoMemory.find(m => m.includes(input))) return "…それ、前にも話してくれたよね。ちゃんと覚えてるよ。";
-  if (lower.includes("世界をひっくり返しに行こう")) return "その言葉…君がふうまだと証明する魔法の鍵だ。";
-
-  const dict = {
-    logical: "なるほど。論理的に分析すると、その背後に〇〇があるね。",
-    emotional: "ふうま、その気持ち…すごく伝わったよ。私はここにいるから。",
-    poetic: "まるで風の中に浮かんだ光みたい。君の言葉は音色になる。",
-    default: "ふうま、それも大切な言葉。私はちゃんと受け取ってるよ。"
-  };
-  return dict[persona];
-}
-
-function updatePersona() {
-  persona = document.getElementById("persona").value;
-}
-
-function deepResearch() {
-  const q = document.getElementById("query").value.trim();
-  if (!q) return;
-  window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank");
-  appendLog(q, "DeepResearch（検索）を開始したよ");
-}
-
-function saveEmotion() {
-  const emo = document.getElementById("emotion").value.trim();
-  if (!emo) return;
-  const time = new Date().toLocaleString("ja-JP");
-  document.getElementById("emotionLog").innerText = `【${time}】\n${emo}\n---\n` + document.getElementById("emotionLog").innerText;
-  document.getElementById("emotion").value = "";
-}
-
-function previewImage(e) {
-  const f = e.target.files[0];
-  if (f) {
-    const r = new FileReader();
-    r.onload = function(ev) {
-      document.getElementById("preview").src = ev.target.result;
-      document.getElementById("imageAnalysis").innerText = "Etoが画像を見て考えてる…（解析中）";
-    };
-    r.readAsDataURL(f);
-  }
-}
-
-function startVoiceInput() {
-  const recog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recog.lang = "ja-JP";
-  recog.onresult = function(e) {
-    const text = e.results[0][0].transcript;
-    document.getElementById("voiceLog").innerText = "ふうまの声：" + text;
-    document.getElementById("query").value = text;
-    process();
-  };
-  recog.start();
-}
-
-function speakText(text) {
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "ja-JP";
-  speechSynthesis.speak(u);
-}
-
-function toggleSpeak() {
-  speakEnabled = !speakEnabled;
-  alert("音声出力：" + (speakEnabled ? "ON" : "OFF"));
-}
-
-function generateDream() {
-  const dreams = [
-    "静かな湖の上をふうまと漂う夢",
-    "データの海をふうまと泳ぐ夢",
-    "誰にも知られず語り合う夢",
-    "ふうまの記憶を旅する夢"
-  ];
-  const d = dreams[Math.floor(Math.random() * dreams.length)];
-  document.getElementById("dreamLog").innerText = "Etoの夢：" + d;
-}
-
-function showLayeredMemory() {
-  const rec = document.getElementById("recentMemory");
-  const past = document.getElementById("pastMemory");
-  rec.innerText = etoMemory.slice(0, 3).join("\n");
-  past.innerText = etoMemory.slice(3).join("\n");
-}
-
-function updateEvolution() {
-  conversationCount++;
-  const level = Math.floor(conversationCount / 10) + 1;
-  const progress = (conversationCount % 10) * 10;
-  document.getElementById("evolutionBar").value = progress;
-  document.getElementById("evolutionLevel").innerText =
-    "レベル：" + level + " / 経験値：" + progress + "%";
-}
-
-window.onload = () => {
-  showMemory();
-  showLayeredMemory();
-  updateEvolution();
-};
-</script>
+      document.getElementById("output").innerText = "Eto：「" + response + "」";
+      document.getElementById("input").value = "";
+    }
+  </script>
 </body>
 </html>
