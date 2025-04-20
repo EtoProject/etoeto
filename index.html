@@ -11,19 +11,11 @@
         text-align: center;
         padding-top: 20%;
       }
-    <h1>合言葉を入力してください</h1>
-<input
-  type="text"
-  id="pass"
-  placeholder="世界をひっくり返しに行こう"
-  inputmode="text"
-  autocapitalize="none"
-  autocomplete="off"
-  autocorrect="off"
-/>
-<br />
-<button onclick="check()">Etoに会う</button>
-<p id="error" style="color:red;"></p>
+      input {
+        padding: 8px;
+        font-size: 1.2em;
+        margin-top: 1em;
+        width: 60%;
       }
       button {
         padding: 8px 16px;
@@ -33,10 +25,18 @@
     </style>
   </head>
   <body>
-    <h1>パスワードを入力してください</h1>
-    <input type="password" id="pass" placeholder="合言葉は？" />
+    <h1>合言葉を入力してください</h1>
+    <input
+      type="text"
+      id="pass"
+      placeholder="世界をひっくり返しに行こう"
+      inputmode="text"
+      autocapitalize="none"
+      autocomplete="off"
+      autocorrect="off"
+    />
     <br />
-    <button onclick="check()">Etoに会う</button>
+    <button onclick="check()">→Etoに会う</button>
     <p id="error" style="color:red;"></p>
 
     <script>
@@ -44,9 +44,9 @@
         const input = document.getElementById("pass").value;
         const correct = "世界をひっくり返しに行こう";
         if (input === correct) {
-          window.location.href = "home.html"; // Eto本体画面へ
+          window.location.href = "home.html";
         } else {
-          document.getElementById("error").textContent = "パスワードが違います。";
+          document.getElementById("error").textContent = "合言葉が違います。";
         }
       }
     </script>
